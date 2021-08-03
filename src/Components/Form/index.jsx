@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { v4 as uuidv4 } from 'uuid';
 
-const Form = ()=>{
+const Form = ({crearCitas})=>{
     const [cita, handleChange] =useState({
         mascota:'',
         propietario:'',
@@ -27,13 +27,23 @@ const Form = ()=>{
         //eliminar mensaje previo
         updateError(false)
         // ASIGNAR UN ID PARA LUEGO PEGAR EN OTRO LUGAR Y CADA ELEMENTO TIENE QUE SER ÚNICO
-        cita.id= uuidv4();
-        console.log(cita)
+        const id= uuidv4();
+        handleChange({...cita, id})
+        
+        //Crear Citas
+        crearCitas({...cita, id})
 
-
-     
-
+        //reinciar los campos
+        handleChange({
+        mascota:'',
+        propietario:'',
+        fecha:'',
+        hora:'',
+        sintomas:''
+        })
+        
     }
+    
     return(
         <>
             <h2>Crear Cita</h2>
