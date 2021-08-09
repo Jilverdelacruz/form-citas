@@ -1,14 +1,30 @@
 import Form from './Components/Form'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Citas from './Components/Citas'
 
 function App() {
-    const [citas, guardarCitas] = useState([])
+  // Obtener local storage
+  let citasIniciales= JSON.parse(localStorage.getItem('citas'))
+  if(!citasIniciales){
+    citasIniciales=[]
+    
+  }
+  
+    const [citas, guardarCitas] = useState(citasIniciales)
     const crearCitas = cita =>{
       guardarCitas([...citas, cita])
     }
-  
-    // funcion que tome las  citas actuales y aregue la nueva
+    // guardar en local Storage
+    useEffect(()=>{
+      localStorage.setItem('citas',  JSON.stringify(citas))
+    }, [citas])
+    // funcion para elimnar cita
+    const deleteCita = id=>{
+      const newCita= citas.filter(cita=> cita.id !== id)
+      guardarCitas(newCita)
+  }
+  //condicional citas
+  const title= citas.length === 0 ? 'No hay citas' : 'Administra tus Citas'
   return (
     <>
       <h1>Administrador de Tareas</h1>
@@ -18,10 +34,14 @@ function App() {
             <Form crearCitas={crearCitas}/>
             </div>
             <div className='one-half column'>
-              <h1>Administra Tus Citas</h1>
+              <h1>{title}</h1>
               {
                 citas.map(cita =>(
-                  <Citas cita={cita}/>
+                  <Citas 
+                  key={cita.id}
+                  cita={cita}
+                  deleteCita={deleteCita}
+                  />
                 ))
               }
             
